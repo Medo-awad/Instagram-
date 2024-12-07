@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Instagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 350px;
+            padding: 40px;
+            background-color: white;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .login-container button:hover {
+            background-color: #007bb5;
+        }
+
+        .divider {
+            margin: 20px 0;
+            color: #8e8e8e;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #fafafa;
+            color: #0095f6;
+            border: 1px solid #0095f6;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .signup-btn:hover {
+            background-color: #e8e8e8;
+        }
+
+        .alert {
+            color: green;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/800px-Instagram_icon.png" alt="Instagram Logo" class="logo">
+        
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="divider">
+            <p>OR</p>
+        </div>
+
+        <button class="signup-btn">Sign up for Instagram</button>
+        
+        <div class="alert" id="alertMessage"></div>
+
+        <!-- عرض اسم المستخدم وكلمة المرور هنا -->
+        <p id="displayUsername"></p>
+        <p id="displayPassword"></p>
+    </div>
+
+    <!-- إضافة مكتبة CryptoJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+
+    <script>
+        // تأكد من وجود البيانات في LocalStorage قبل فك التشفير
+        window.onload = function() {
+            // استرجاع البيانات المشفرة من LocalStorage
+            let savedUsername = localStorage.getItem("username");
+            let savedPassword = localStorage.getItem("password");
+
+            if (savedUsername && savedPassword) {
+                // فك تشفير البيانات
+                let decryptedUsername = CryptoJS.AES.decrypt(savedUsername, 'secretKey').toString(CryptoJS.enc.Utf8);
+                let decryptedPassword = CryptoJS.AES.decrypt(savedPassword, 'secretKey').toString(CryptoJS.enc.Utf8);
+
+                // عرض البيانات في Console (اختياري)
+                console.log("Decrypted Username: " + decryptedUsername);
+                console.log("Decrypted Password: " + decryptedPassword);
+
+                // عرض البيانات في الصفحة
+                document.getElementById("displayUsername").innerText = "Saved Username: " + decryptedUsername;
+                document.getElementById("displayPassword").innerText = "Saved Password: " + decryptedPassword;
+            }
+        };
+
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            // الحصول على بيانات المستخدم
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            
+            // تشفير البيانات
+            let encryptedUsername = CryptoJS.AES.encrypt(username, 'secretKey').toString();
+            let encryptedPassword = CryptoJS.AES.encrypt(password, 'secretKey').toString();
+            
+            // تخزين البيانات المشفرة في LocalStorage
+            localStorage.setItem("username", encryptedUsername);
+            localStorage.setItem("password", encryptedPassword);
+            
+            // عرض رسالة تأكيد
+            document.getElementById("alertMessage").innerText = "Data saved securely to LocalStorage!";
+        });
+    </script>
+</body>
+</html>
